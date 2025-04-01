@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package butler;
+
+service SessionService {
+  rpc SaveSession (SaveSessionRequest) returns (SaveSessionResponse);
+  rpc LoadSession (LoadSessionRequest) returns (LoadSessionResponse);
+  rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse);
+  rpc DeleteSession (DeleteSessionRequest) returns (DeleteSessionResponse);
+}
+
+message SaveSessionRequest {
+  string name = 1;
+  string json_data = 2; // Full SavedSession JSON blob
+}
+
+message SaveSessionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message LoadSessionRequest {
+  string name = 1;
+}
+
+message LoadSessionResponse {
+  string json_data = 1;
+  bool found = 2;
+}
+
+message ListSessionsRequest {}
+
+message ListSessionsResponse {
+  repeated string session_names = 1;
+}
+
+message DeleteSessionRequest {
+  string name = 1;
+}
+
+message DeleteSessionResponse {
+  bool success = 1;
+  string message = 2;
+}
