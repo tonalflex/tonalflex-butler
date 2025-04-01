@@ -5,3 +5,9 @@ __pycache__/
 # Protobuf-generated stubs
 proto/*_pb2.py
 proto/*_pb2_grpc.py
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
