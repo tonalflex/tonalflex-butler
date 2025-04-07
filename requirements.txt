@@ -1,10 +1,5 @@
-# gRPC core
-grpcio>=1.62.2
-grpcio-tools>=1.62.2
-
-# JSON & file handling (already built-in with Python, but included for clarity)
-protobuf>=4.25.3
-
-# Optional (for type checking, development tooling)
+grpcio
+grpcio-tools
+protobuf
 mypy
 black
