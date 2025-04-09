@@ -28,3 +28,15 @@ def generate_proto_stubs():
         raise RuntimeError(f"protoc failed with exit code {result}")
     else:
         print("[gRPC] Proto stubs compiled successfully.")
+
+    # Modify the generated butler_pb2.py file to use 'proto' import
+    grpc_stub_path = os.path.join(proto_path, "butler_pb2_grpc.py")
+    with open(grpc_stub_path, "r+") as f:
+        content = f.read()
+        content = content.replace("import butler_pb2 as", "from proto import butler_pb2 as")
+        f.seek(0)
+        f.write(content)
+        f.truncate()
+
+if __name__ == "__main__":
+    generate_proto_stubs()
