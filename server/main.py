@@ -1,15 +1,3 @@
-import sys
-import os
-
-# Add 'proto' directory to Python's module search path
-proto_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../proto"))
-sys.path.append(proto_path)
-
-# 1. Compile proto before imports
-from utils.compile_proto import generate_proto_stubs
-generate_proto_stubs()
-
-# 2. Now import generated modules
 from concurrent import futures
 import grpc
 from proto import butler_pb2_grpc  # Import from 'proto' directory

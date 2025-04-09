@@ -11,3 +11,11 @@ venv/
 env/
 .venv/
 .env/
+
+# Build artifacts 
+dist/
+build/
+butler.spec
+
+# Various
+.DS_Store
