@@ -20,7 +20,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/tonalflex/elk-audio-os-builder:latest
-          options: --platform linux/amd64 -v ${{ github.workspace }}:/workspace -w /workspace
+          options: --platform linux/amd64 --user root -v ${{ github.workspace }}:/workspace -w /workspace
           run: ./script/generate-proto.sh
 
       - name: Upload generated proto files
@@ -31,7 +31,7 @@ jobs:
           path: ./proto # adjust path to wherever your generated files live
 
   build-binary:
-    name: Build Butler Linux ARM64 Binary
+    name: Build Linux ARM64 Binary
     needs: generate-proto
     runs-on: ubuntu-latest
     env:
