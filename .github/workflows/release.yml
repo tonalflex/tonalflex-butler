@@ -49,12 +49,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download proto files
+      - name: Download proto files to a temp dir
         if: ${{ !env.ACT }}
         uses: actions/download-artifact@v4
         with:
           name: proto-files
-          path: ./proto
+          path: ./downloaded-proto
+
+      - name: Replace ./proto with downloaded files
+        run: |
+          rm -rf ./proto
+          mkdir -p ./proto
+          cp -r ./downloaded-proto/* ./proto/
+
+      - name: Confirm generated proto files are present
+        run: |
+          echo "Listing ./proto contents:"
+          ls -lah ./proto
+          echo
+          echo "Previewing one .py file (if any):"
+          head -n 10 ./proto/*_pb2.py || echo "No *_pb2.py files found"
 
       - name: Run QEMU builder container
         uses: addnab/docker-run-action@v3
@@ -68,10 +82,13 @@ jobs:
           mkdir -p release
           cp dist/butler release/
           tar -czvf butler-${{ github.ref_name }}-linux-arm64.tar.gz -C release butler
+          cp butler-${{ github.ref_name }}-linux-arm64.tar.gz butler-linux-arm64.tar.gz
 
       - name: Upload binary to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          files: butler-${{ github.ref_name }}-linux-arm64.tar.gz
+          files: |
+            butler-${{ github.ref_name }}-linux-arm64.tar.gz
+            butler-linux-arm64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
