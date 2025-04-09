@@ -13,8 +13,6 @@ jobs:
   generate-proto:
     name: Generate Proto Files
     runs-on: ubuntu-latest
-    env:
-      ACT: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,18 +25,15 @@ jobs:
           run: ./script/generate-proto.sh
 
       - name: Upload generated proto files
-        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v4
         with:
           name: proto-files
-          path: ./proto # adjust path to wherever your generated files live
+          path: ./proto
 
   build-binary:
     name: Build Linux ARM64 Binary
     needs: generate-proto
     runs-on: ubuntu-latest
-    env:
-      ACT: false
     steps:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -49,26 +44,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download proto files to a temp dir
-        if: ${{ !env.ACT }}
+      - name: Download proto files
         uses: actions/download-artifact@v4
         with:
           name: proto-files
-          path: ./downloaded-proto
-
-      - name: Replace ./proto with downloaded files
-        run: |
-          rm -rf ./proto
-          mkdir -p ./proto
-          cp -r ./downloaded-proto/* ./proto/
-
-      - name: Confirm generated proto files are present
-        run: |
-          echo "Listing ./proto contents:"
-          ls -lah ./proto
-          echo
-          echo "Previewing one .py file (if any):"
-          head -n 10 ./proto/*_pb2.py || echo "No *_pb2.py files found"
+          path: ./proto
 
       - name: Run QEMU builder container
         uses: addnab/docker-run-action@v3
