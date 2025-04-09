@@ -1,0 +1,71 @@
+name: Build and Release Butler
+
+on:
+  push:
+    tags:
+      - "v*" # e.g. v1.0.0
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-proto:
+    name: Generate Proto Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run proto-generator container
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/tonalflex/elk-audio-os-builder:latest
+          options: --platform linux/amd64 --user root -v ${{ github.workspace }}:/workspace -w /workspace
+          run: ./script/generate-proto.sh
+
+      - name: Upload generated proto files
+        uses: actions/upload-artifact@v4
+        with:
+          name: proto-files
+          path: ./proto
+
+  build-binary:
+    name: Build Linux ARM64 Binary
+    needs: generate-proto
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download proto files
+        uses: actions/download-artifact@v4
+        with:
+          name: proto-files
+          path: ./proto
+
+      - name: Run QEMU builder container
+        uses: addnab/docker-run-action@v3
+        with:
+          image: python:3.12.10-slim-bullseye
+          options: --platform linux/arm64 -v ${{ github.workspace }}:/workspace -w /workspace --entrypoint ""
+          run: ./script/build.sh
+
+      - name: Package binary as tar.gz
+        run: |
+          mkdir -p release
+          cp dist/butler release/
+          tar -czvf butler-linux-arm64.tar.gz -C release butler
+
+      - name: Upload binary to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: butler-linux-arm64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
