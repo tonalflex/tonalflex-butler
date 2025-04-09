@@ -1,0 +1,18 @@
+services:
+  proto-generator:
+    image: ghcr.io/tonalflex/elk-audio-os-builder:latest
+    container_name: proto-generator
+    platform: linux/amd64
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: "./script/generate-proto.sh"
+
+  butler-arm64-builder:
+    image: python:3.12.10-slim-bullseye
+    container_name: butler-arm64-builder
+    platform: linux/arm64
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: "./script/build.sh"
