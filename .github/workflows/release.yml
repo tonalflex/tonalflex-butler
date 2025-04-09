@@ -61,14 +61,11 @@ jobs:
         run: |
           mkdir -p release
           cp dist/butler release/
-          tar -czvf butler-${{ github.ref_name }}-linux-arm64.tar.gz -C release butler
-          cp butler-${{ github.ref_name }}-linux-arm64.tar.gz butler-linux-arm64.tar.gz
+          tar -czvf butler-linux-arm64.tar.gz -C release butler
 
       - name: Upload binary to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            butler-${{ github.ref_name }}-linux-arm64.tar.gz
-            butler-linux-arm64.tar.gz
+          files: butler-linux-arm64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
