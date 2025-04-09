@@ -37,6 +37,12 @@ jobs:
     env:
       ACT: false
     steps:
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -47,11 +53,11 @@ jobs:
           name: proto-files
           path: ./proto
 
-      - name: Run builder container (arm64)
+      - name: Run QEMU builder container
         uses: addnab/docker-run-action@v3
         with:
           image: python:3.12.10-slim-bullseye
-          options: --platform linux/arm64 -v ${{ github.workspace }}:/workspace -w /workspace
+          options: --platform linux/arm64 -v ${{ github.workspace }}:/workspace -w /workspace --entrypoint ""
           run: ./script/build.sh
 
       - name: Package binary as tar.gz
