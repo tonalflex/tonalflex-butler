@@ -2,7 +2,8 @@ syntax = "proto3";
 
 package butler;
 
-service SessionService {
+// --- Session Service ---
+service Session {
   rpc SaveSession (SaveSessionRequest) returns (SaveSessionResponse);
   rpc LoadSession (LoadSessionRequest) returns (LoadSessionResponse);
   rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse);
@@ -39,6 +40,56 @@ message DeleteSessionRequest {
 }
 
 message DeleteSessionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// --- Wifi Service ---
+service Wifi {
+  rpc ListAvailableNetworks (Empty) returns (AvailableNetworksResponse);
+  rpc ConnectToNetwork (WifiCredentials) returns (WifiConnectResponse);
+}
+
+message Empty {}
+
+message AvailableNetworksResponse {
+  repeated string ssids = 1;
+}
+
+message WifiCredentials {
+  string ssid = 1;
+  string password = 2;
+}
+
+message WifiConnectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// --- MIDI Service ---
+service Midi {
+  rpc ListDevices (Empty) returns (MidiDevicesResponse);
+  rpc ConnectDevice (MidiConnectRequest) returns (MidiConnectResponse);
+}
+
+message MidiDevice {
+  int32 client_id = 1;
+  int32 port_id = 2;
+  string name = 3;
+}
+
+message MidiDevicesResponse {
+  repeated MidiDevice devices = 1;
+}
+
+message MidiConnectRequest {
+  int32 controller_client = 1;
+  int32 controller_port = 2;
+  int32 sushi_client = 3;
+  int32 sushi_port = 4;
+}
+
+message MidiConnectResponse {
   bool success = 1;
   string message = 2;
 }

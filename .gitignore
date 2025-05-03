@@ -11,6 +11,7 @@ venv/
 env/
 .venv/
 .env/
+venv311
 
 # Build artifacts 
 dist/
