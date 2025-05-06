@@ -8,6 +8,8 @@ service Session {
   rpc LoadSession (LoadSessionRequest) returns (LoadSessionResponse);
   rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse);
   rpc DeleteSession (DeleteSessionRequest) returns (DeleteSessionResponse);
+  rpc RenameSession (RenameSessionRequest) returns (RenameSessionResponse);
+
 }
 
 message SaveSessionRequest {
@@ -40,6 +42,16 @@ message DeleteSessionRequest {
 }
 
 message DeleteSessionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message RenameSessionRequest {
+  string old_name = 1;
+  string new_name = 2;
+}
+
+message RenameSessionResponse {
   bool success = 1;
   string message = 2;
 }
@@ -90,6 +102,55 @@ message MidiConnectRequest {
 }
 
 message MidiConnectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// --- File Service ---
+service File {
+  rpc ListFiles (ListFilesRequest) returns (ListFilesResponse);
+  rpc UploadFile (UploadFileRequest) returns (FileOperationResponse);
+  rpc DownloadFile (DownloadFileRequest) returns (DownloadFileResponse);
+  rpc DeleteFile (DeleteFileRequest) returns (FileOperationResponse);
+  rpc RenameFile (RenameFileRequest) returns (FileOperationResponse);
+}
+
+message ListFilesRequest {
+  string folder = 1; // "NAM" or "IR"
+}
+
+message ListFilesResponse {
+  repeated string filenames = 1;
+}
+
+message UploadFileRequest {
+  string folder = 1;
+  string filename = 2;
+  bytes content = 3;
+}
+
+message DownloadFileRequest {
+  string folder = 1;
+  string filename = 2;
+}
+
+message DownloadFileResponse {
+  bytes content = 1;
+  bool found = 2;
+}
+
+message DeleteFileRequest {
+  string folder = 1;
+  string filename = 2;
+}
+
+message RenameFileRequest {
+  string folder = 1;
+  string old_name = 2;
+  string new_name = 3;
+}
+
+message FileOperationResponse {
   bool success = 1;
   string message = 2;
 }
