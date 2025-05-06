@@ -8,11 +8,14 @@ from storage.file_manager import save_json, load_json, list_sessions, delete_fil
 
 SESSION_DIR = "sessions"
 
-class SessionServiceServicer(butler_pb2_grpc.SessionServiceServicer):
+
+class SessionService(butler_pb2_grpc.SessionServicer):
     def SaveSession(self, request, context):
         try:
             save_json(SESSION_DIR, request.name, request.json_data)
-            return butler_pb2.SaveSessionResponse(success=True, message="Saved successfully")
+            return butler_pb2.SaveSessionResponse(
+                success=True, message="Saved successfully"
+            )
         except Exception as e:
             return butler_pb2.SaveSessionResponse(success=False, message=str(e))
 
