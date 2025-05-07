@@ -6,7 +6,7 @@ import json
 from proto import butler_pb2, butler_pb2_grpc
 from storage.file_manager import save_session, load_session, list_sessions, delete_session, rename_session
 
-SESSION_DIR = "sessions"
+SESSION_DIR = "/home/mind/sessions"
 
 
 class SessionService(butler_pb2_grpc.SessionServicer):
