@@ -78,6 +78,42 @@ message WifiConnectResponse {
   string message = 2;
 }
 
+// --- Bluetooth Service ---
+service Bluetooth {
+  rpc ScanDevices (Empty) returns (BluetoothScanResponse);
+  rpc ConnectDevice (BluetoothConnectRequest) returns (BluetoothConnectResponse);
+  rpc DisconnectDevice (BluetoothDisconnectRequest) returns (BluetoothDisconnectResponse);
+  rpc ListConnectedDevices (Empty) returns (BluetoothScanResponse);
+}
+
+message BluetoothDevice {
+  string name = 1;
+  string address = 2;
+}
+
+message BluetoothScanResponse {
+  repeated BluetoothDevice devices = 1;
+}
+
+message BluetoothConnectRequest {
+  string address = 1;
+  string name = 2;
+}
+
+message BluetoothConnectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message BluetoothDisconnectRequest {
+  string address = 1;
+}
+
+message BluetoothDisconnectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 // --- MIDI Service ---
 service Midi {
   rpc ListDevices (Empty) returns (MidiDevicesResponse);
