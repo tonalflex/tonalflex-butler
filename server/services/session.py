@@ -4,7 +4,7 @@ import grpc
 import os
 import json
 from proto import butler_pb2, butler_pb2_grpc
-from storage.file_manager import save_json, load_json, list_sessions, delete_file
+from storage.file_manager import save_session, load_session, list_sessions, delete_session, rename_session
 
 SESSION_DIR = "sessions"
 
@@ -12,7 +12,7 @@ SESSION_DIR = "sessions"
 class SessionService(butler_pb2_grpc.SessionServicer):
     def SaveSession(self, request, context):
         try:
-            save_json(SESSION_DIR, request.name, request.json_data)
+            save_session(SESSION_DIR, request.name, request.json_data)
             return butler_pb2.SaveSessionResponse(
                 success=True, message="Saved successfully"
             )
@@ -20,7 +20,7 @@ class SessionService(butler_pb2_grpc.SessionServicer):
             return butler_pb2.SaveSessionResponse(success=False, message=str(e))
 
     def LoadSession(self, request, context):
-        data = load_json(SESSION_DIR, request.name)
+        data = load_session(SESSION_DIR, request.name)
         if data:
             return butler_pb2.LoadSessionResponse(json_data=data, found=True)
         else:
@@ -31,5 +31,9 @@ class SessionService(butler_pb2_grpc.SessionServicer):
         return butler_pb2.ListSessionsResponse(session_names=names)
 
     def DeleteSession(self, request, context):
-        success, message = delete_file(SESSION_DIR, request.name)
+        success, message = delete_session(SESSION_DIR, request.name)
         return butler_pb2.DeleteSessionResponse(success=success, message=message)
+    
+    def RenameSession(self, request, context):
+        success, message = rename_session(SESSION_DIR, request.old_name, request.new_name)
+        return butler_pb2.RenameSessionResponse(success=success, message=message)

@@ -4,10 +4,10 @@ A gRPC server which handles side function for elk-os and sushi, like file transf
 
 Current functions:
 
-- List all json files
-- Receive json as string and save as file
-- Load and transfer json file as string
-- Delete json file
+- Load/Save/Delete/Rename Sessions
+- Load/Save/Delete/Rename NAM, IR, etc
+- Wifi setup
+- Midi setup
 
 ## Run Butler (linux)
 
