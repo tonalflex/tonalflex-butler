@@ -6,10 +6,24 @@ import json
 from proto import butler_pb2, butler_pb2_grpc
 from storage.file_manager import save_session, load_session, list_sessions, delete_session, rename_session
 
-SESSION_DIR = "sessions"
+SESSION_DIR = "/home/mind/sessions"
 
 
 class SessionService(butler_pb2_grpc.SessionServicer):
+    def __init__(self):
+        self._snapshot_json = None
+
+    def SaveSnapshot(self, request, context):
+        self._snapshot_json = request.json_data
+        return butler_pb2.SaveSnapshotResponse(success=True, message="Snapshot saved")
+
+    def LoadSnapshot(self, request, context):
+        if self._snapshot_json is not None:
+            return butler_pb2.LoadSnapshotResponse(json_data=self._snapshot_json, found=True)
+        else:
+            return butler_pb2.LoadSnapshotResponse(json_data="", found=False)
+
+
     def SaveSession(self, request, context):
         try:
             save_session(SESSION_DIR, request.name, request.json_data)

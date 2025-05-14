@@ -7,9 +7,9 @@ NAM_DIR = "NAM"
 IR_DIR = "IR"
 
 def get_path(folder):
-    if folder == "NAM":
+    if folder == "/home/mind/NAM":
         return NAM_DIR
-    elif folder == "IR":
+    elif folder == "/home/mind/IR":
         return IR_DIR
     else:
         raise ValueError("Invalid folder: must be 'NAM' or 'IR'")

@@ -4,6 +4,8 @@ package butler;
 
 // --- Session Service ---
 service Session {
+  rpc SaveSnapshot (SaveSnapshotRequest) returns (SaveSnapshotResponse);
+  rpc LoadSnapshot (LoadSnapshotRequest) returns (LoadSnapshotResponse);
   rpc SaveSession (SaveSessionRequest) returns (SaveSessionResponse);
   rpc LoadSession (LoadSessionRequest) returns (LoadSessionResponse);
   rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse);
@@ -12,9 +14,25 @@ service Session {
 
 }
 
+message SaveSnapshotRequest {
+  string json_data = 1;
+}
+
+message SaveSnapshotResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message LoadSnapshotRequest {}
+
+message LoadSnapshotResponse {
+  string json_data = 1;
+  bool found = 2;
+}
+
 message SaveSessionRequest {
   string name = 1;
-  string json_data = 2; // Full SavedSession JSON blob
+  string json_data = 2;
 }
 
 message SaveSessionResponse {
